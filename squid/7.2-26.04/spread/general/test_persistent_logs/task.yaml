@@ -16,7 +16,7 @@ execute: |
 
   # Wait for squid to listen on port 3128
   until docker exec squid pebble logs squid | grep -qF "listening port: 3128"; do
-    sleep 5
+    sleep 1
   done
 
   # Call the test web server to generate some logs

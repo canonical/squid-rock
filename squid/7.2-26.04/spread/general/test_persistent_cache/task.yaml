@@ -28,11 +28,11 @@ execute: |
 
   # Wait for the setup to be ready
   until curl -s -x http://127.0.0.1:3128 http://test-web-server >/dev/null; do
-    sleep 5
+    sleep 1
   done
 
   # Test that squid connected to the test web server
-  docker exec squid pebble logs squid | grep -qF "TCP_MISS/200"
+  docker exec squid cat /var/log/squid/access.log | grep -qF "TCP_MISS/200"
 
   # stop and relaunch the squid container
   docker stop squid
@@ -45,8 +45,8 @@ execute: |
 
   # Wait for the setup to be ready
   until curl -s -x http://127.0.0.1:3128 http://test-web-server >/dev/null; do
-    sleep 5
+    sleep 1
   done
 
   # Test that squid cached the response from the previous instance and served it
-  docker exec squid pebble logs squid | grep -qF "TCP_REFRESH_UNMODIFIED/200"
+  docker exec squid cat /var/log/squid/access.log | grep -qF "TCP_REFRESH_UNMODIFIED/200"
