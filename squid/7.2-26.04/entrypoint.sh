@@ -16,10 +16,10 @@
 # [1] The default configuration is changed in the rockcraft.yaml to allow local
 # network connections. See the rockcraft.yaml for further information.
 
-tail -F /var/log/squid/access.log 2>/dev/null &
-tail -F /var/log/squid/error.log 2>/dev/null &
-tail -F /var/log/squid/store.log 2>/dev/null &
-tail -F /var/log/squid/cache.log 2>/dev/null &
+tail --follow=name --retry /var/log/squid/access.log 2>/dev/null &
+tail --follow=name --retry /var/log/squid/error.log 2>/dev/null &
+tail --follow=name --retry /var/log/squid/store.log 2>/dev/null &
+tail --follow=name --retry /var/log/squid/cache.log 2>/dev/null &
 
 # create missing cache directories and exit
 /usr/sbin/squid-gnutls -Nz
