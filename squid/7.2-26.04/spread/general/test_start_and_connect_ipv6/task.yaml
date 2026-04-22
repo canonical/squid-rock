@@ -18,9 +18,7 @@ execute: |
   docker run --rm -d --name squid --network squid-test -p 3128:3128 squid:7.2-26.04
 
   # Wait for the setup to be ready
-  until curl -s -x http://[::1]:3128 http://test-web-server >/dev/null; do
-    sleep 1
-  done
+  timeout 30 bash -c 'until curl -s -x http://[::1]:3128 http://test-web-server >/dev/null; do sleep 1; done'
 
   # Test that squid can connect to the test web server (ipv6)
   curl -6 -s -x http://[::1]:3128 http://test-web-server | grep -qF "It works"
