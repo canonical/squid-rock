@@ -22,4 +22,4 @@ execute: |
 
   # Test that squid can connect to the test web server (ipv6)
   curl -6 -s -x http://[::1]:3128 http://test-web-server | grep -qF "It works"
-  docker exec squid cat /var/log/squid/access.log | grep "TCP_MISS/200" || exit 1
+  docker exec squid cat /var/log/squid/access.log | grep -qF "TCP_MISS/200"
