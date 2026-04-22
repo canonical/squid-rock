@@ -23,4 +23,4 @@ tail --follow=name --retry /var/log/squid/cache.log 2>/dev/null &
 
 # create missing cache directories and exit
 /usr/sbin/squid-gnutls -Nz
-/usr/sbin/squid-gnutls "$@"
+exec /usr/sbin/squid-gnutls "$@"
