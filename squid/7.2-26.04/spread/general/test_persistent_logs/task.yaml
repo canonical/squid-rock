@@ -17,7 +17,8 @@ execute: |
   # Wait for squid to listen on port 3128
   timeout 30 bash -c 'until docker exec squid pebble logs squid | grep -qF "listening port: 3128"; do sleep 1; done'
 
-  # Call the test web server to generate some logs
+  # Call some URL to generate logs
+  # For test simplicity nothing is required to be listening on localhost:8000
   curl -s -x http://localhost:3128 http://localhost:8000/
 
   # Verify that it was logged in the volume
