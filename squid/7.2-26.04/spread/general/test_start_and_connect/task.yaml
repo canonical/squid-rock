@@ -1,0 +1,25 @@
+summary: test squid starts and connects (ipv4)
+
+execute: |
+  # Cleanup function
+  cleanup() {
+    docker stop squid test-web-server >/dev/null 2>&1 || true
+    docker network rm squid-test >/dev/null 2>&1 || true
+  }
+  trap cleanup EXIT
+
+  # Create a network for the test
+  docker network create squid-test
+
+  # Spin up a test web server (i.e apache2 image)
+  docker run --rm -d --name test-web-server --network squid-test ubuntu/apache2:2.4-26.04_edge
+
+  # Start the squid container
+  docker run --rm -d --name squid --network squid-test -p 3128:3128 squid:7.2-26.04
+
+  # Wait for the setup to be ready
+  timeout 30 bash -c 'until curl -s -x http://127.0.0.1:3128 http://test-web-server >/dev/null; do sleep 1; done'
+
+  # Test that squid can connect to the test web server (ipv4)
+  curl -4 -s -x http://127.0.0.1:3128 http://test-web-server | grep -qF "It works"
+  docker exec squid cat /var/log/squid/access.log | grep -qF "TCP_MISS/200" || exit 1

@@ -1,0 +1,34 @@
+summary: test logs are persisted in the proper volume
+
+execute: |
+  # Cleanup function
+  cleanup() {
+    docker stop squid >/dev/null 2>&1 || true
+    docker volume rm squid-logs >/dev/null 2>&1 || true
+  }
+  trap cleanup EXIT
+
+  # Create a volume for the test
+  docker volume create squid-logs
+
+  # Start the squid container
+  docker run --rm -d --name squid -p 3128:3128 -v squid-logs:/var/log/squid squid:7.2-26.04
+
+  # Wait for squid to listen on port 3128
+  timeout 30 bash -c 'until docker exec squid pebble logs squid | grep -qF "listening port: 3128"; do sleep 1; done'
+
+  # Call some URL to generate logs
+  # For test simplicity nothing is required to be listening on localhost:8000
+  curl -s -x http://localhost:3128 http://localhost:8000/
+
+  # Verify that it was logged in the volume
+  docker exec squid cat /var/log/squid/access.log | grep -qF 'GET http://localhost:8000/'
+
+  # Stop (and remove) the container
+  docker stop squid
+
+  # Start a new container with the same volume
+  docker run --rm -d --name squid -p 3128:3128 -v squid-logs:/var/log/squid squid:7.2-26.04
+
+  # Verify that the logs are still there
+  docker exec squid cat /var/log/squid/access.log | grep -qF 'GET http://localhost:8000/'
