@@ -27,6 +27,9 @@ services:
 parts: 
   squid:
     plugin: nil
+    # TODO: Uncomment and remove git+override-build once slices are merged.
+    # See https://github.com/canonical/chisel-releases/pull/993
+    #
     # stage-packages:
     #   - base-files_base
     #   - base-files_chisel
