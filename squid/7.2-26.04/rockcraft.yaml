@@ -8,8 +8,7 @@ description: |
     File Transfer Protocol (FTP), and other popular network protocols.
 
 base: bare
-# TODO change to 26.04 once 26.04 is officially released
-build-base: devel
+build-base: ubuntu@26.04
 run-user: _daemon_
 
 platforms:
