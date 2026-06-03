@@ -36,9 +36,9 @@ parts:
     #   - base-passwd_data
     #   - squid_core
     #   - squid_auth
-    #   - squid_acl
-    #   - squid_caching
-    #   - squid_cert
+    #   - squid_ext-acls
+    #   - squid_cache
+    #   - squid_cert-tool
     #   - squid-common_data
     #   - tzdata_zoneinfo
     #   - libc-bin_nsswitch
@@ -54,9 +54,9 @@ parts:
           base-passwd_data \
           squid_core \
           squid_auth \
-          squid_acl \
-          squid_caching \
-          squid_cert \
+          squid_ext-acls \
+          squid_cache \
+          squid_cert-tool \
           squid-common_data \
           tzdata_zoneinfo \
           libc-bin_nsswitch \
