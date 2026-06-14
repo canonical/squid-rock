@@ -32,8 +32,14 @@ suites:
 
     prepare: |
       sudo snap install rockcraft --classic
-      sudo snap install k8s --classic
-      
+
+      # on s390x and ppc64le we need to install microk8s from the edge channel
+      CHANNEL="stable"
+      if [ "$(uname -m)" = "s390x" ] || [ "$(uname -m)" = "ppc64le" ]; then
+        CHANNEL="edge"
+      fi
+      sudo snap install k8s --classic --channel=$CHANNEL
+
       # Wait for k8s to be ready and enable the registry and dns storage
       k8s bootstrap
       k8s status --wait-ready
