@@ -2,13 +2,16 @@ summary: test squid starts and connects (ipv4)
 
 execute: |
 
+  # Create the configmap with the squid.conf file
+  k8s kubectl create configmap squid-config --from-file=squid=squid.conf
+
   # Start the squid container
-  microk8s kubectl apply -f deployment.yaml
-  microk8s kubectl rollout status deploy/squid-deployment --timeout=120s
+  k8s kubectl apply -f deployment.yaml
+  k8s kubectl rollout status deploy/squid-deployment --timeout=120s
 
   # Wait for the setup to be ready
   timeout 30 bash -c 'until curl -s -x http://127.0.0.1:30128 https://ubuntu.com >/dev/null; do sleep 1; done'
 
   # Test that squid can connect to the web server (ipv4)
-  curl -4 -s -x http://127.0.0.1:30128 https://ubuntu.com | grep -qF "It works"
-  microk8s kubectl exec deploy/squid-deployment -- cat /var/log/squid/access.log | grep -qF "TCP_MISS/200" || exit 1
+  curl -4 -sI -x http://127.0.0.1:30128 https://ubuntu.com | grep -qF "200 OK"
+  k8s kubectl exec deploy/squid-deployment -- cat /var/log/squid/access.log | grep -qF "CONNECT ubuntu.com:443"
