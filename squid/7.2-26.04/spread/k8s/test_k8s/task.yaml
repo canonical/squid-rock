@@ -2,6 +2,15 @@ summary: test squid starts and connects (ipv4)
 
 execute: |
 
+  # Cilium (CNI) is not yet supported on s390x and ppc64le
+  # so we'll skip the k8s tests on those architectures for now
+  # ---
+  # TODO: Remove this check once Cilium supports s390x and ppc64le
+  if [ "$(uname -m)" = "s390x" ] || [ "$(uname -m)" = "ppc64le" ]; then
+    echo "Skipping k8s tests on $(uname -m) architecture"
+    exit 0
+  fi
+
   # Create the configmap with the squid.conf file
   k8s kubectl create configmap squid-config --from-file=squid=squid.conf
 
