@@ -26,41 +26,20 @@ services:
 parts: 
   squid:
     plugin: nil
-    # TODO: Uncomment and remove git+override-build once slices are merged.
-    # See https://github.com/canonical/chisel-releases/pull/993
-    #
-    # stage-packages:
-    #   - base-files_base
-    #   - base-files_chisel
-    #   - base-files_release-info
-    #   - base-passwd_data
-    #   - squid_core
-    #   - squid_auth
-    #   - squid_ext-acls
-    #   - squid_cache
-    #   - squid_cert-tool
-    #   - squid-common_data
-    #   - tzdata_zoneinfo
-    #   - libc-bin_nsswitch
-    #   - libpam-modules_libs # For pam authentication capabilities
-    source: https://github.com/alesancor1/chisel-releases.git
-    source-type: git
-    source-branch: 26.04/squid
-    override-build: |
-        chisel cut --release ./ --ignore unstable --root ${CRAFT_PART_INSTALL} \
-          base-files_base \
-          base-files_chisel \
-          base-files_release-info \
-          base-passwd_data \
-          squid_core \
-          squid_auth \
-          squid_ext-acls \
-          squid_cache \
-          squid_cert-tool \
-          squid-common_data \
-          tzdata_zoneinfo \
-          libc-bin_nsswitch \
-          libpam-modules_libs
+    stage-packages:
+      - base-files_base
+      - base-files_chisel
+      - base-files_release-info
+      - base-passwd_data
+      - squid_core
+      - squid_auth
+      - squid_ext-acls
+      - squid_cache
+      - squid_cert-tool
+      - squid-common_data
+      - tzdata_zoneinfo
+      - libc-bin_nsswitch
+      - libpam-modules_libs # For pam authentication capabilities
     override-prime: |
         craftctl default
 
