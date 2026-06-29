@@ -34,6 +34,7 @@ execute: |
 
   # stop and relaunch the squid container
   docker stop squid
+  docker wait squid >/dev/null 2>&1 || true
   docker run --rm -d --name squid \
   -p 3128:3128 \
   --network squid-test \
