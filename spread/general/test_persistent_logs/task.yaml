@@ -26,6 +26,7 @@ execute: |
 
   # Stop (and remove) the container
   docker stop squid
+  docker wait squid >/dev/null 2>&1 || true
 
   # Start a new container with the same volume
   docker run --rm -d --name squid -p 3128:3128 -v squid-logs:/var/log/squid squid:7.2-26.04
