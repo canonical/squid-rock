@@ -8,8 +8,7 @@ description: |
     File Transfer Protocol (FTP), and other popular network protocols.
 
 base: bare
-# TODO change to 26.04 once 26.04 is officially released
-build-base: devel
+build-base: ubuntu@26.04
 run-user: _daemon_
 
 platforms:
@@ -27,41 +26,14 @@ services:
 parts: 
   squid:
     plugin: nil
-    # TODO: Uncomment and remove git+override-build once slices are merged.
-    # See https://github.com/canonical/chisel-releases/pull/993
-    #
-    # stage-packages:
-    #   - base-files_base
-    #   - base-files_chisel
-    #   - base-files_release-info
-    #   - base-passwd_data
-    #   - squid_core
-    #   - squid_auth
-    #   - squid_acl
-    #   - squid_caching
-    #   - squid_cert
-    #   - squid-common_data
-    #   - tzdata_zoneinfo
-    #   - libc-bin_nsswitch
-    #   - libpam-modules_libs # For pam authentication capabilities
-    source: https://github.com/alesancor1/chisel-releases.git
-    source-type: git
-    source-branch: 26.04/squid
-    override-build: |
-        chisel cut --release ./ --ignore unstable --root ${CRAFT_PART_INSTALL} \
-          base-files_base \
-          base-files_chisel \
-          base-files_release-info \
-          base-passwd_data \
-          squid_core \
-          squid_auth \
-          squid_acl \
-          squid_caching \
-          squid_cert \
-          squid-common_data \
-          tzdata_zoneinfo \
-          libc-bin_nsswitch \
-          libpam-modules_libs
+    stage-packages:
+      - base-files_base
+      - base-files_chisel
+      - base-files_release-info
+      - squid_standard
+      - tzdata_zoneinfo
+      - libc-bin_nsswitch
+      - libpam-modules_libs # For pam authentication capabilities
     override-prime: |
         craftctl default
 
