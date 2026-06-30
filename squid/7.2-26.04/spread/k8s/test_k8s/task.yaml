@@ -29,15 +29,8 @@ execute: |
     k8s kubectl describe pod -l app=squid | sed -n '/Events:/,$p' || true
     echo "===== DEBUG: squid pod logs ====="
     k8s kubectl logs deploy/squid-deployment --tail=50 || true
-    echo "===== DEBUG: squid resolv.conf (nameserver it got) ====="
-    k8s kubectl exec deploy/squid-deployment -- cat /etc/resolv.conf || true
-    echo "===== DEBUG: squid cache.log (real DNS error detail) ====="
-    k8s kubectl exec deploy/squid-deployment -- cat /var/log/squid/cache.log || true
-    echo "===== DEBUG: CoreDNS up? (cluster dns) ====="
-    k8s kubectl get pods -n kube-system -o wide || true
-    k8s kubectl logs -n kube-system -l k8s-app=kube-dns --tail=30 || true
-    # NOTE: cat is present (test below relies on it); getent/nslookup are not in the minimal rock.
-    # if these don't explain it, escalate: a busybox pod running `nslookup ubuntu.com` to test cluster dns directly.
+    echo "===== DEBUG: dns + egress from inside pod ====="
+    k8s kubectl exec deploy/squid-deployment -- getent hosts ubuntu.com || echo "pod cannot resolve ubuntu.com"
     # triangulate where the connect breaks: loopback NodePort vs node-ip NodePort vs pod-ip direct
     POD_IP=$(k8s kubectl get pod -l app=squid -o jsonpath='{.items[0].status.podIP}')
     NODE_IP=$(k8s kubectl get node -o jsonpath='{.items[0].status.addresses[?(@.type=="InternalIP")].address}')
