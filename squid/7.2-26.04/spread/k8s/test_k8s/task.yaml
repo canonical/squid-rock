@@ -18,37 +18,8 @@ execute: |
   k8s kubectl apply -f deployment.yaml
   k8s kubectl rollout status deploy/squid-deployment --timeout=120s
 
-  # DEBUG: dump cluster/proxy state so we can see why the connect fails in ci
-  dump_debug() {
-    echo "===== DEBUG: pods ====="
-    k8s kubectl get pods -o wide
-    echo "===== DEBUG: service / endpoints ====="
-    k8s kubectl get svc squid-service -o wide
-    k8s kubectl get endpoints squid-service -o wide
-    echo "===== DEBUG: pod describe (events: crashloop/probe/mount) ====="
-    k8s kubectl describe pod -l app=squid | sed -n '/Events:/,$p' || true
-    echo "===== DEBUG: squid pod logs ====="
-    k8s kubectl logs deploy/squid-deployment --tail=50 || true
-    echo "===== DEBUG: dns + egress from inside pod ====="
-    k8s kubectl exec deploy/squid-deployment -- getent hosts ubuntu.com || echo "pod cannot resolve ubuntu.com"
-    # triangulate where the connect breaks: loopback NodePort vs node-ip NodePort vs pod-ip direct
-    POD_IP=$(k8s kubectl get pod -l app=squid -o jsonpath='{.items[0].status.podIP}')
-    NODE_IP=$(k8s kubectl get node -o jsonpath='{.items[0].status.addresses[?(@.type=="InternalIP")].address}')
-    echo "pod ip: $POD_IP  node ip: $NODE_IP"
-    echo "===== DEBUG: curl via NodePort on loopback (verbose) ====="
-    curl -v -x http://127.0.0.1:30128 https://ubuntu.com 2>&1 | head -40 || true
-    echo "===== DEBUG: curl via NodePort on node ip (verbose) ====="
-    curl -v -x "http://$NODE_IP:30128" https://ubuntu.com 2>&1 | head -40 || true
-    echo "===== DEBUG: curl via pod ip directly (bypasses service, verbose) ====="
-    curl -v -x "http://$POD_IP:3128" https://ubuntu.com 2>&1 | head -40 || true
-  }
-
   # Wait for the setup to be ready
-  if ! timeout 30 bash -c 'until curl -s -x http://127.0.0.1:30128 https://ubuntu.com >/dev/null; do sleep 1; done'; then
-    echo "FAILED: proxy did not become reachable in 30s"
-    dump_debug
-    exit 1
-  fi
+  timeout 30 bash -c 'until curl -s -x http://127.0.0.1:30128 https://ubuntu.com >/dev/null; do sleep 1; done'
 
   # Test that squid can connect to the web server (ipv4)
   curl -4 -s -o /dev/null -w '%{http_code}' -x http://127.0.0.1:30128 https://ubuntu.com | grep -qF "200"
