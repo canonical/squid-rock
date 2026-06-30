@@ -58,5 +58,5 @@ execute: |
   fi
 
   # Test that squid can connect to the web server (ipv4)
-  curl -4 -sI -x http://127.0.0.1:30128 https://ubuntu.com | grep -qF "200 OK"
+  curl -4 -s -o /dev/null -w '%{http_code}' -x http://127.0.0.1:30128 https://ubuntu.com | grep -qF "200"
   k8s kubectl exec deploy/squid-deployment -- cat /var/log/squid/access.log | grep -qF "CONNECT ubuntu.com:443"
