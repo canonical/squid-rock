@@ -35,6 +35,7 @@ execute: |
   # stop and relaunch the squid container
   docker stop squid
   docker wait squid >/dev/null 2>&1 || true
+  timeout 30 bash -c 'while docker container inspect squid >/dev/null 2>&1; do sleep 1; done'
   docker run --rm -d --name squid \
   -p 3128:3128 \
   --network squid-test \
