@@ -3,7 +3,7 @@ summary: test squid starts and connects (ipv4)
 execute: |
   # Cleanup function
   cleanup() {
-    docker stop squid test-web-server >/dev/null 2>&1 || true
+    docker rm -f squid test-web-server >/dev/null 2>&1 || true
     docker network rm squid-test >/dev/null 2>&1 || true
   }
   trap cleanup EXIT
