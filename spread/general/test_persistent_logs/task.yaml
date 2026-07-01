@@ -3,7 +3,7 @@ summary: test logs are persisted in the proper volume
 execute: |
   # Cleanup function
   cleanup() {
-    docker stop squid >/dev/null 2>&1 || true
+    docker rm -f squid >/dev/null 2>&1 || true
     docker volume rm squid-logs >/dev/null 2>&1 || true
   }
   trap cleanup EXIT
