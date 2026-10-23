@@ -8,4 +8,4 @@ This image was created with [Chisel](https://ubuntu.com/chisel/docs) to reduce t
 
 ## Available versions
 
-* [squid-7.2 (Ubuntu 26.04)](./squid/7.2-26.04/rockcraft.yaml)
+* [squid-7.2 (Ubuntu 26.04)](https://github.com/canonical/squid-rock/tree/7.2-26.04)

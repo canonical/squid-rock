@@ -8,7 +8,7 @@ description: |
     File Transfer Protocol (FTP), and other popular network protocols.
 
 base: bare
-build-base: ubuntu@26.04
+build-base: devel
 run-user: _daemon_
 
 platforms:

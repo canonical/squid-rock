@@ -20,7 +20,7 @@ execute: |
     --name squid \
     -p 3128:3128 \
     -v $(pwd)/squid.conf:/etc/squid/squid.conf:ro \
-    squid:7.2-26.04
+    squid:devel
 
   # Wait for the setup to be ready
   timeout 30 bash -c 'until curl -s -x http://127.0.0.1:3128 http://test-web-server >/dev/null; do sleep 1; done'

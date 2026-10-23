@@ -1,4 +1,4 @@
-project: squid
+project: squid:devel
 
 backends:
   craft:
@@ -22,10 +22,10 @@ suites:
       sudo apt remove --yes retry
 
       # Load the rock into docker
-      sudo rockcraft.skopeo --insecure-policy copy "oci-archive:$CRAFT_ARTIFACT" docker-daemon:squid:7.2-26.04
+      sudo rockcraft.skopeo --insecure-policy copy "oci-archive:$CRAFT_ARTIFACT" docker-daemon:squid:devel
 
     restore: |
-      docker image rm --force squid:7.2-26.04
+      docker image rm --force squid:devel
   
   spread/k8s/:
     summary: K8s integration tests
