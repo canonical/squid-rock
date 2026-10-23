@@ -1,4 +1,4 @@
-project: squid
+project: squid:7.2-26.04
 
 backends:
   craft:
