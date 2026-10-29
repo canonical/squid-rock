@@ -8,7 +8,8 @@ description: |
     File Transfer Protocol (FTP), and other popular network protocols.
 
 base: bare
-build-base: ubuntu@26.10
+# TODO: Update once 26.10 is stabilized
+build-base: devel
 run-user: _daemon_
 
 platforms:
@@ -26,14 +27,28 @@ services:
 parts: 
   squid:
     plugin: nil
-    stage-packages:
-      - base-files_base
-      - base-files_chisel
-      - base-files_release-info
-      - squid_standard
-      - tzdata_zoneinfo
-      - libc-bin_nsswitch
-      - libpam-modules_libs # For pam authentication capabilities
+
+    # TODO: Uncomment once 26.10 is stabilized
+    # stage-packages:
+    #   - base-files_base
+    #   - base-files_chisel
+    #   - base-files_release-info
+    #   - squid_standard
+    #   - tzdata_zoneinfo
+    #   - libc-bin_nsswitch
+    #   - libpam-modules_libs # For pam authentication capabilities
+
+    # TODO: Remove once 26.10 is stabilized
+    override-build: |
+      craftctl default
+      chisel cut --release ubuntu-26.10 --root ${CRAFT_PART_INSTALL} \
+        base-files_base \
+        base-files_release-info \
+        squid_standard \
+        tzdata_zoneinfo \
+        libc-bin_nsswitch \
+        libpam-modules_libs
+
     override-prime: |
         craftctl default
 
@@ -57,9 +72,19 @@ parts:
     plugin: dump
     source: .
     source-type: local
-    stage-packages:
-      - dash_bins
-      - coreutils_tail
+
+    # TODO: Uncomment once 26.10 is stabilized
+    # stage-packages:
+    #   - dash_bins
+    #   - coreutils_tail
+
+    # TODO: Remove once 26.10 is stabilized
+    override-build: |
+      craftctl default
+      chisel cut --release ubuntu-26.10 --root ${CRAFT_PART_INSTALL} \
+        dash_bins \
+        coreutils_tail
+
     organize:
       'entrypoint.sh': usr/local/bin/entrypoint.sh
     stage:
