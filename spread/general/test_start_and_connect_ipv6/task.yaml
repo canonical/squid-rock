@@ -15,7 +15,7 @@ execute: |
   docker run --rm -d --name test-web-server --network squid-test ubuntu/apache2:2.4-26.04_edge
 
   # Start the squid container
-  docker run --rm -d --name squid --network squid-test -p 3128:3128 squid:devel
+  docker run --rm -d --name squid --network squid-test -p 3128:3128 squid:7.7-26.10
 
   # Wait for the setup to be ready
   timeout 30 bash -c 'until curl -s -x http://[::1]:3128 http://test-web-server >/dev/null; do sleep 1; done'
