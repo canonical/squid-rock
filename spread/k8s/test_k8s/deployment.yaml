@@ -42,7 +42,7 @@ spec:
     spec:
       containers:
       - name: squid
-        image: squid:7.2
+        image: squid:7.7
         ports:
         - containerPort: 3128
           name: squid
